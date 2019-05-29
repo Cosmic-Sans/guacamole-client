@@ -69,23 +69,12 @@ Guacamole.BlobReader = function(stream, mimetype) {
     // Append received blobs
     stream.onblob = function(data) {
 
-        // Convert to ArrayBuffer
-        var binary = window.atob(data);
-        var arrayBuffer = new ArrayBuffer(binary.length);
-        var bufferView = new Uint8Array(arrayBuffer);
-
-        for (var i=0; i<binary.length; i++)
-            bufferView[i] = binary.charCodeAt(i);
-
-        blob_builder.append(arrayBuffer);
-        length += arrayBuffer.byteLength;
+        blob_builder.append(data);
+        length += data.byteLength;
 
         // Call handler, if present
         if (guac_reader.onprogress)
-            guac_reader.onprogress(arrayBuffer.byteLength);
-
-        // Send success response
-        stream.sendAck("OK", 0x0000);
+            guac_reader.onprogress(data.byteLength);
 
     };
 

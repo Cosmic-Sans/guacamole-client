@@ -151,15 +151,6 @@ Guacamole.RawAudioPlayer = function RawAudioPlayer(stream, mimetype) {
     var nextPacketTime = context.currentTime;
 
     /**
-     * Guacamole.ArrayBufferReader wrapped around the audio input stream
-     * provided with this Guacamole.RawAudioPlayer was created.
-     *
-     * @private
-     * @type {Guacamole.ArrayBufferReader}
-     */
-    var reader = new Guacamole.ArrayBufferReader(stream);
-
-    /**
      * The minimum size of an audio packet split by splitAudioPacket(), in
      * seconds. Audio packets smaller than this will not be split, nor will the
      * split result of a larger packet ever be smaller in size than this
@@ -407,7 +398,7 @@ Guacamole.RawAudioPlayer = function RawAudioPlayer(stream, mimetype) {
     };
 
     // Defer playback of received audio packets slightly
-    reader.ondata = function playReceivedAudio(data) {
+    stream.onblob = function playReceivedAudio(data) {
 
         // Push received samples onto queue
         pushAudioPacket(new SampleArray(data));

@@ -784,9 +784,9 @@ Guacamole.Client = function(tunnel) {
 
         "ack": function(parameters) {
 
-            var stream_index = parseInt(parameters[0]);
-            var reason = parameters[1];
-            var code = parseInt(parameters[2]);
+            var stream_index = parameters.stream;
+            var reason = parameters.message;
+            var code = parameters.status;
 
             // Get stream
             var stream = output_streams[stream_index];
@@ -809,13 +809,13 @@ Guacamole.Client = function(tunnel) {
 
         "arc": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
-            var x = parseInt(parameters[1]);
-            var y = parseInt(parameters[2]);
-            var radius = parseInt(parameters[3]);
-            var startAngle = parseFloat(parameters[4]);
-            var endAngle = parseFloat(parameters[5]);
-            var negative = parseInt(parameters[6]);
+            var layer = getLayer(parameters.layer);
+            var x = parameters.x;
+            var y = parameters.y;
+            var radius = parameters.radius;
+            var startAngle = parameters.start;
+            var endAngle = parameters.end;
+            var negative = parameters.negative;
 
             display.arc(layer, x, y, radius, startAngle, endAngle, negative != 0);
 
@@ -823,8 +823,8 @@ Guacamole.Client = function(tunnel) {
 
         "audio": function(parameters) {
 
-            var stream_index = parseInt(parameters[0]);
-            var mimetype = parameters[1];
+            var stream_index = parameters.stream;
+            var mimetype = parameters.mimetype;
 
             // Create stream 
             var stream = streams[stream_index] =
@@ -854,8 +854,8 @@ Guacamole.Client = function(tunnel) {
         "blob": function(parameters) {
 
             // Get stream 
-            var stream_index = parseInt(parameters[0]);
-            var data = parameters[1];
+            var stream_index = parameters.stream;
+            var data = parameters.data;
             var stream = streams[stream_index];
 
             // Write data
@@ -867,12 +867,12 @@ Guacamole.Client = function(tunnel) {
         "body" : function handleBody(parameters) {
 
             // Get object
-            var objectIndex = parseInt(parameters[0]);
+            var objectIndex = parameters.object;
             var object = objects[objectIndex];
 
-            var streamIndex = parseInt(parameters[1]);
-            var mimetype = parameters[2];
-            var name = parameters[3];
+            var streamIndex = parameters.stream;
+            var mimetype = parameters.mimetype;
+            var name = parameters.name;
 
             // Create stream if handler defined
             if (object && object.onbody) {
@@ -888,12 +888,12 @@ Guacamole.Client = function(tunnel) {
 
         "cfill": function(parameters) {
 
-            var channelMask = parseInt(parameters[0]);
-            var layer = getLayer(parseInt(parameters[1]));
-            var r = parseInt(parameters[2]);
-            var g = parseInt(parameters[3]);
-            var b = parseInt(parameters[4]);
-            var a = parseInt(parameters[5]);
+            var channelMask = parameters.mask;
+            var layer = getLayer(parameters.layer);
+            var r = parameters.r;
+            var g = parameters.g;
+            var b = parameters.b;
+            var a = parameters.a;
 
             display.setChannelMask(layer, channelMask);
             display.fillColor(layer, r, g, b, a);
@@ -902,7 +902,7 @@ Guacamole.Client = function(tunnel) {
 
         "clip": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
+            var layer = getLayer(parameters);
 
             display.clip(layer);
 
@@ -910,8 +910,8 @@ Guacamole.Client = function(tunnel) {
 
         "clipboard": function(parameters) {
 
-            var stream_index = parseInt(parameters[0]);
-            var mimetype = parameters[1];
+            var stream_index = parameters.stream;
+            var mimetype = parameters.mimetype;
 
             // Create stream 
             if (guac_client.onclipboard) {
@@ -927,7 +927,7 @@ Guacamole.Client = function(tunnel) {
 
         "close": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
+            var layer = getLayer(parameters);
 
             display.close(layer);
 
@@ -935,15 +935,15 @@ Guacamole.Client = function(tunnel) {
 
         "copy": function(parameters) {
 
-            var srcL = getLayer(parseInt(parameters[0]));
-            var srcX = parseInt(parameters[1]);
-            var srcY = parseInt(parameters[2]);
-            var srcWidth = parseInt(parameters[3]);
-            var srcHeight = parseInt(parameters[4]);
-            var channelMask = parseInt(parameters[5]);
-            var dstL = getLayer(parseInt(parameters[6]));
-            var dstX = parseInt(parameters[7]);
-            var dstY = parseInt(parameters[8]);
+            var srcL = getLayer(parameters.srcLayer);
+            var srcX = parameters.srcX;
+            var srcY = parameters.srcY;
+            var srcWidth = parameters.srcWidth;
+            var srcHeight = parameters.srcHeight;
+            var channelMask = parameters.mask;
+            var dstL = getLayer(parameters.dstLayer);
+            var dstX = parameters.dstX;
+            var dstY = parameters.dstY;
 
             display.setChannelMask(dstL, channelMask);
             display.copy(srcL, srcX, srcY, srcWidth, srcHeight, 
@@ -953,15 +953,15 @@ Guacamole.Client = function(tunnel) {
 
         "cstroke": function(parameters) {
 
-            var channelMask = parseInt(parameters[0]);
-            var layer = getLayer(parseInt(parameters[1]));
-            var cap = lineCap[parseInt(parameters[2])];
-            var join = lineJoin[parseInt(parameters[3])];
-            var thickness = parseInt(parameters[4]);
-            var r = parseInt(parameters[5]);
-            var g = parseInt(parameters[6]);
-            var b = parseInt(parameters[7]);
-            var a = parseInt(parameters[8]);
+            var channelMask = parameters.mask;
+            var layer = getLayer(parameters.layer);
+            var cap = lineCap[parameters.cap];
+            var join = lineJoin[par.join];
+            var thickness = parameters.thickness;
+            var r = parameters.r;
+            var g = parameters.g;
+            var b = parameters.b;
+            var a = parameters.a;
 
             display.setChannelMask(layer, channelMask);
             display.strokeColor(layer, cap, join, thickness, r, g, b, a);
@@ -970,13 +970,13 @@ Guacamole.Client = function(tunnel) {
 
         "cursor": function(parameters) {
 
-            var cursorHotspotX = parseInt(parameters[0]);
-            var cursorHotspotY = parseInt(parameters[1]);
-            var srcL = getLayer(parseInt(parameters[2]));
-            var srcX = parseInt(parameters[3]);
-            var srcY = parseInt(parameters[4]);
-            var srcWidth = parseInt(parameters[5]);
-            var srcHeight = parseInt(parameters[6]);
+            var cursorHotspotX = parameters.x;
+            var cursorHotspotY = parameters.y;
+            var srcL = getLayer(parameters.srcLayer);
+            var srcX = parameters.srcX;
+            var srcY = parameters.srcY;
+            var srcWidth = parameters.srcWidth;
+            var srcHeight = parameters.srcHeight;
 
             display.setCursor(cursorHotspotX, cursorHotspotY,
                               srcL, srcX, srcY, srcWidth, srcHeight);
@@ -985,13 +985,13 @@ Guacamole.Client = function(tunnel) {
 
         "curve": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
-            var cp1x = parseInt(parameters[1]);
-            var cp1y = parseInt(parameters[2]);
-            var cp2x = parseInt(parameters[3]);
-            var cp2y = parseInt(parameters[4]);
-            var x = parseInt(parameters[5]);
-            var y = parseInt(parameters[6]);
+            var layer = getLayer(parameters.layer);
+            var cp1x = parameters.cp1x;
+            var cp1y = parameters.cp1y;
+            var cp2x = parameters.cp2x;
+            var cp2y = parameters.cp2y;
+            var x = parameters.x;
+            var y = parameters.y;
 
             display.curveTo(layer, cp1x, cp1y, cp2x, cp2y, x, y);
 
@@ -1006,7 +1006,7 @@ Guacamole.Client = function(tunnel) {
 
         "dispose": function(parameters) {
             
-            var layer_index = parseInt(parameters[0]);
+            var layer_index = parameters;
 
             // If visible layer, remove from parent
             if (layer_index > 0) {
@@ -1030,13 +1030,13 @@ Guacamole.Client = function(tunnel) {
 
         "distort": function(parameters) {
 
-            var layer_index = parseInt(parameters[0]);
-            var a = parseFloat(parameters[1]);
-            var b = parseFloat(parameters[2]);
-            var c = parseFloat(parameters[3]);
-            var d = parseFloat(parameters[4]);
-            var e = parseFloat(parameters[5]);
-            var f = parseFloat(parameters[6]);
+            var layer_index = parameters.layer;
+            var a = parameters.a;
+            var b = parameters.b;
+            var c = parameters.c;
+            var d = parameters.d;
+            var e = parameters.e;
+            var f = parameters.f;
 
             // Only valid for visible layers (not buffers)
             if (layer_index >= 0) {
@@ -1048,8 +1048,8 @@ Guacamole.Client = function(tunnel) {
  
         "error": function(parameters) {
 
-            var reason = parameters[0];
-            var code = parseInt(parameters[1]);
+            var reason = parameters.text
+            var code = parameters.status;
 
             // Call handler if defined
             if (guac_client.onerror)
@@ -1061,7 +1061,7 @@ Guacamole.Client = function(tunnel) {
 
         "end": function(parameters) {
 
-            var stream_index = parseInt(parameters[0]);
+            var stream_index = parameters;
 
             // Get stream
             var stream = streams[stream_index];
@@ -1080,9 +1080,9 @@ Guacamole.Client = function(tunnel) {
 
         "file": function(parameters) {
 
-            var stream_index = parseInt(parameters[0]);
-            var mimetype = parameters[1];
-            var filename = parameters[2];
+            var stream_index = parameters.stream;
+            var mimetype = parameters.mimetype;
+            var filename = parameters.filename;
 
             // Create stream 
             if (guac_client.onfile) {
@@ -1098,8 +1098,8 @@ Guacamole.Client = function(tunnel) {
 
         "filesystem" : function handleFilesystem(parameters) {
 
-            var objectIndex = parseInt(parameters[0]);
-            var name = parameters[1];
+            var objectIndex = parameters.object;
+            var name = parameters.name;
 
             // Create object, if supported
             if (guac_client.onfilesystem) {
@@ -1113,7 +1113,7 @@ Guacamole.Client = function(tunnel) {
 
         "identity": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
+            var layer = getLayer(parameters);
 
             display.setTransform(layer, 1, 0, 0, 1, 0, 0);
 
@@ -1121,30 +1121,30 @@ Guacamole.Client = function(tunnel) {
 
         "img": function(parameters) {
 
-            var stream_index = parseInt(parameters[0]);
-            var channelMask = parseInt(parameters[1]);
-            var layer = getLayer(parseInt(parameters[2]));
-            var mimetype = parameters[3];
-            var x = parseInt(parameters[4]);
-            var y = parseInt(parameters[5]);
+            var stream_index = parameters.stream;
+            var channelMask = parameters.mode;
+            var layer = getLayer(parameters.layer);
+            var mimetype = parameters.mimetype;
+            var x = parameters.x;
+            var y = parameters.y;
 
             // Create stream
             var stream = streams[stream_index] = new Guacamole.InputStream(guac_client, stream_index);
-            var reader = new Guacamole.DataURIReader(stream, mimetype);
+            var reader = new Guacamole.BlobReader(stream, mimetype);
 
             // Draw image when stream is complete
             reader.onend = function drawImageBlob() {
                 display.setChannelMask(layer, channelMask);
-                display.draw(layer, x, y, reader.getURI());
+                display.drawBlob(layer, x, y, reader.getBlob());
             };
 
         },
 
         "lfill": function(parameters) {
 
-            var channelMask = parseInt(parameters[0]);
-            var layer = getLayer(parseInt(parameters[1]));
-            var srcLayer = getLayer(parseInt(parameters[2]));
+            var channelMask = parameters.mask;
+            var layer = getLayer(parameters.layer);
+            var srcLayer = getLayer(parameters.srcLayer);
 
             display.setChannelMask(layer, channelMask);
             display.fillLayer(layer, srcLayer);
@@ -1153,9 +1153,9 @@ Guacamole.Client = function(tunnel) {
 
         "line": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
-            var x = parseInt(parameters[1]);
-            var y = parseInt(parameters[2]);
+            var layer = getLayer(parameters.layer);
+            var x = parameters.x;
+            var y = parameters.y;
 
             display.lineTo(layer, x, y);
 
@@ -1163,9 +1163,9 @@ Guacamole.Client = function(tunnel) {
 
         "lstroke": function(parameters) {
 
-            var channelMask = parseInt(parameters[0]);
-            var layer = getLayer(parseInt(parameters[1]));
-            var srcLayer = getLayer(parseInt(parameters[2]));
+            var channelMask = parameters.mask;
+            var layer = getLayer(parameters.layer);
+            var srcLayer = getLayer(parameters.srcLayer);
 
             display.setChannelMask(layer, channelMask);
             display.strokeLayer(layer, srcLayer);
@@ -1174,8 +1174,8 @@ Guacamole.Client = function(tunnel) {
 
         "mouse" : function handleMouse(parameters) {
 
-            var x = parseInt(parameters[0]);
-            var y = parseInt(parameters[1]);
+            var x = parameters.x;
+            var y = parameters.y;
 
             // Display and move software cursor to received coordinates
             display.showCursor(true);
@@ -1185,11 +1185,11 @@ Guacamole.Client = function(tunnel) {
 
         "move": function(parameters) {
             
-            var layer_index = parseInt(parameters[0]);
-            var parent_index = parseInt(parameters[1]);
-            var x = parseInt(parameters[2]);
-            var y = parseInt(parameters[3]);
-            var z = parseInt(parameters[4]);
+            var layer_index = parameters.layer;
+            var parent_index = parameters.parent;
+            var x = parameters.x;
+            var y = parameters.y;
+            var z = parameters.z;
 
             // Only valid for non-default layers
             if (layer_index > 0 && parent_index >= 0) {
@@ -1201,14 +1201,14 @@ Guacamole.Client = function(tunnel) {
         },
 
         "name": function(parameters) {
-            if (guac_client.onname) guac_client.onname(parameters[0]);
+            if (guac_client.onname) guac_client.onname(parameters);
         },
 
         "pipe": function(parameters) {
 
-            var stream_index = parseInt(parameters[0]);
-            var mimetype = parameters[1];
-            var name = parameters[2];
+            var stream_index = parameters.index;
+            var mimetype = parameters.mimetype;
+            var name = parameters.name;
 
             // Create stream 
             if (guac_client.onpipe) {
@@ -1224,7 +1224,7 @@ Guacamole.Client = function(tunnel) {
 
         "pop": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
+            var layer = getLayer(parameters);
 
             display.pop(layer);
 
@@ -1232,7 +1232,7 @@ Guacamole.Client = function(tunnel) {
 
         "push": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
+            var layer = getLayer(parameters);
 
             display.push(layer);
 
@@ -1240,11 +1240,11 @@ Guacamole.Client = function(tunnel) {
  
         "rect": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
-            var x = parseInt(parameters[1]);
-            var y = parseInt(parameters[2]);
-            var w = parseInt(parameters[3]);
-            var h = parseInt(parameters[4]);
+            var layer = getLayer(parameters.layer);
+            var x = parameters.x;
+            var y = parameters.y;
+            var w = parameters.width;
+            var h = parameters.height;
 
             display.rect(layer, x, y, w, h);
 
@@ -1252,7 +1252,7 @@ Guacamole.Client = function(tunnel) {
         
         "reset": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
+            var layer = getLayer(parameters);
 
             display.reset(layer);
 
@@ -1260,9 +1260,9 @@ Guacamole.Client = function(tunnel) {
         
         "set": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
-            var name = parameters[1];
-            var value = parameters[2];
+            var layer = getLayer(parameters.layer);
+            var name = parameters.property;
+            var value = parameters.value;
 
             // Call property handler if defined
             var handler = layerPropertyHandlers[name];
@@ -1273,8 +1273,8 @@ Guacamole.Client = function(tunnel) {
 
         "shade": function(parameters) {
             
-            var layer_index = parseInt(parameters[0]);
-            var a = parseInt(parameters[1]);
+            var layer_index = parameters.layer;
+            var a = parameters.opacity;
 
             // Only valid for visible layers (not buffers)
             if (layer_index >= 0) {
@@ -1286,10 +1286,10 @@ Guacamole.Client = function(tunnel) {
 
         "size": function(parameters) {
 
-            var layer_index = parseInt(parameters[0]);
+            var layer_index = parameters.layer;
             var layer = getLayer(layer_index);
-            var width = parseInt(parameters[1]);
-            var height = parseInt(parameters[2]);
+            var width = parameters.width;
+            var height = parameters.height;
 
             display.resize(layer, width, height);
 
@@ -1297,9 +1297,9 @@ Guacamole.Client = function(tunnel) {
         
         "start": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
-            var x = parseInt(parameters[1]);
-            var y = parseInt(parameters[2]);
+            var layer = getLayer(parameters.layer);
+            var x = parameters.x;
+            var y = parameters.y;
 
             display.moveTo(layer, x, y);
 
@@ -1307,7 +1307,7 @@ Guacamole.Client = function(tunnel) {
 
         "sync": function(parameters) {
 
-            var timestamp = parseInt(parameters[0]);
+            var timestamp = parameters;
 
             // Flush display, send sync when done
             display.flush(function displaySyncComplete() {
@@ -1339,15 +1339,15 @@ Guacamole.Client = function(tunnel) {
 
         "transfer": function(parameters) {
 
-            var srcL = getLayer(parseInt(parameters[0]));
-            var srcX = parseInt(parameters[1]);
-            var srcY = parseInt(parameters[2]);
-            var srcWidth = parseInt(parameters[3]);
-            var srcHeight = parseInt(parameters[4]);
-            var function_index = parseInt(parameters[5]);
-            var dstL = getLayer(parseInt(parameters[6]));
-            var dstX = parseInt(parameters[7]);
-            var dstY = parseInt(parameters[8]);
+            var srcL = getLayer(parameters.srcLayer);
+            var srcX = parameters.srcX;
+            var srcY = parameters.srcY;
+            var srcWidth = parameters.srcWidth;
+            var srcHeight = parameters.srcHeight;
+            var function_index = parameters.function;
+            var dstL = getLayer(parameters.dstLayer);
+            var dstX = parameters.dstX;
+            var dstY = parameters.dstY;
 
             /* SRC */
             if (function_index === 0x3)
@@ -1363,13 +1363,13 @@ Guacamole.Client = function(tunnel) {
 
         "transform": function(parameters) {
 
-            var layer = getLayer(parseInt(parameters[0]));
-            var a = parseFloat(parameters[1]);
-            var b = parseFloat(parameters[2]);
-            var c = parseFloat(parameters[3]);
-            var d = parseFloat(parameters[4]);
-            var e = parseFloat(parameters[5]);
-            var f = parseFloat(parameters[6]);
+            var layer = getLayer(parameters.layer);
+            var a = parameters.a;
+            var b = parameters.b;
+            var c = parameters.c;
+            var d = parameters.d;
+            var e = parameters.e;
+            var f = parameters.f;
 
             display.transform(layer, a, b, c, d, e, f);
 
@@ -1378,7 +1378,7 @@ Guacamole.Client = function(tunnel) {
         "undefine" : function handleUndefine(parameters) {
 
             // Get object
-            var objectIndex = parseInt(parameters[0]);
+            var objectIndex = parameters;
             var object = objects[objectIndex];
 
             // Signal end of object definition
@@ -1389,9 +1389,9 @@ Guacamole.Client = function(tunnel) {
 
         "video": function(parameters) {
 
-            var stream_index = parseInt(parameters[0]);
-            var layer = getLayer(parseInt(parameters[1]));
-            var mimetype = parameters[2];
+            var stream_index = parameters.stream;
+            var layer = getLayer(parameters.layer);
+            var mimetype = parameters.mimetype;
 
             // Create stream
             var stream = streams[stream_index] =
