@@ -1140,19 +1140,6 @@ Guacamole.Client = function(tunnel) {
 
         },
 
-        "jpeg": function(parameters) {
-
-            var channelMask = parseInt(parameters[0]);
-            var layer = getLayer(parseInt(parameters[1]));
-            var x = parseInt(parameters[2]);
-            var y = parseInt(parameters[3]);
-            var data = parameters[4];
-
-            display.setChannelMask(layer, channelMask);
-            display.draw(layer, x, y, "data:image/jpeg;base64," + data);
-
-        },
-
         "lfill": function(parameters) {
 
             var channelMask = parseInt(parameters[0]);
@@ -1217,11 +1204,6 @@ Guacamole.Client = function(tunnel) {
             if (guac_client.onname) guac_client.onname(parameters[0]);
         },
 
-        "nest": function(parameters) {
-            var parser = getParser(parseInt(parameters[0]));
-            parser.receive(parameters[1]);
-        },
-
         "pipe": function(parameters) {
 
             var stream_index = parseInt(parameters[0]);
@@ -1237,19 +1219,6 @@ Guacamole.Client = function(tunnel) {
             // Otherwise, unsupported
             else
                 guac_client.sendAck(stream_index, "Named pipes unsupported", 0x0100);
-
-        },
-
-        "png": function(parameters) {
-
-            var channelMask = parseInt(parameters[0]);
-            var layer = getLayer(parseInt(parameters[1]));
-            var x = parseInt(parameters[2]);
-            var y = parseInt(parameters[3]);
-            var data = parameters[4];
-
-            display.setChannelMask(layer, channelMask);
-            display.draw(layer, x, y, "data:image/png;base64," + data);
 
         },
 
