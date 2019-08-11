@@ -322,7 +322,7 @@ Guacamole.RawAudioPlayer = function RawAudioPlayer(stream, mimetype) {
      *     playback queue.
      */
     var pushAudioPacket = function pushAudioPacket(data) {
-        packetQueue.push(new SampleArray(data));
+        packetQueue.push(data);
     };
 
     /**
@@ -400,8 +400,14 @@ Guacamole.RawAudioPlayer = function RawAudioPlayer(stream, mimetype) {
     // Defer playback of received audio packets slightly
     stream.onblob = function playReceivedAudio(data) {
 
-        // Push received samples onto queue
-        pushAudioPacket(new SampleArray(data));
+        // Convert the byte array to an array of big endian integers
+        // and push it onto queue
+        pushAudioPacket(
+            new SampleArray(
+                Array(data.length / format.bytesPerSample).fill().map((_, i) => i * format.bytesPerSample)
+                    .map(lsbIndex =>
+                        data.slice(lsbIndex, lsbIndex + format.bytesPerSample)
+                            .reduce((result, byte, index) => result | (byte << (index * 8))))));
 
         // Shift off an arbitrary packet of audio data from the queue (this may
         // be different in size from the packet just pushed)
