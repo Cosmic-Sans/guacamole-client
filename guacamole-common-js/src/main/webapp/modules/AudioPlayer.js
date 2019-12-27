@@ -139,6 +139,8 @@ Guacamole.RawAudioPlayer = function RawAudioPlayer(stream, mimetype) {
      */
     var context = Guacamole.AudioContextFactory.getAudioContext();
 
+    var gain = Guacamole.AudioContextFactory.gain;
+
     /**
      * The earliest possible time that the next packet could play without
      * overlapping an already-playing packet, in seconds. Note that while this
@@ -422,7 +424,9 @@ Guacamole.RawAudioPlayer = function RawAudioPlayer(stream, mimetype) {
 
         // Set up buffer source
         var source = context.createBufferSource();
-        source.connect(context.destination);
+
+        source.connect(gain);
+        gain.connect(context.destination);
 
         // Use noteOn() instead of start() if necessary
         if (!source.start)

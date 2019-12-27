@@ -42,6 +42,8 @@ Guacamole.AudioContextFactory = {
      */
     'singleton' : null,
 
+    'gain' : null,
+
     /**
      * Returns a singleton instance of a Web Audio API AudioContext object.
      *
@@ -59,8 +61,10 @@ Guacamole.AudioContextFactory = {
             try {
 
                 // Create new instance if none yet exists
-                if (!Guacamole.AudioContextFactory.singleton)
-                    Guacamole.AudioContextFactory.singleton = new AudioContext();
+                if (!Guacamole.AudioContextFactory.singleton) {
+                    var context = Guacamole.AudioContextFactory.singleton = new AudioContext();
+                    Guacamole.AudioContextFactory.gain = context.createGain();
+                }
 
                 // Return singleton instance
                 return Guacamole.AudioContextFactory.singleton;
